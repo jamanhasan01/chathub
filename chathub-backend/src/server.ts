@@ -1,58 +1,57 @@
-import express from "express";
-import dotenv from "dotenv";
-import authRoutes from "./routes/auth.routes";
-import userRoute from "./routes/user.routes";
+import express from 'express'
+import dotenv from 'dotenv'
+import authRoutes from './routes/auth.routes'
+import userRoute from './routes/user.routes'
 
 import cookieParser from 'cookie-parser'
 
-import connectDB from "./config/connectDB";
-import cors from "cors";
-import { errorMiddleware } from "./middlewares/error.middleware";
+import connectDB from './config/connectDB'
+import cors from 'cors'
+import { errorMiddleware } from './middlewares/error.middleware'
 
-dotenv.config();
+dotenv.config()
 
-const app = express();
+const app = express()
 /* =============================== CORS CONFIG ================================ */
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",
-      "https://e-commerce-backend-tawny-ten.vercel.app",
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'https://e-commerce-backend-tawny-ten.vercel.app',
     ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials:true,
-  })
-);
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  }),
+)
 
 /* ===============================
    Global Middleware
 ================================ */
 app.use(cookieParser())
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 /* ===============================
    Connect DB
 ================================ */
-connectDB();
-
+connectDB()
 
 /* ===============================
    Test Route
 ================================ */
-app.get("/", (_req, res) => {
-  res.send("server running well");
-});
+app.get('/', (_req, res) => {
+  res.send('server running well')
+})
 
 /* =============================== All Route Global middle ware ================================ */
-app.use("/api/auth", authRoutes);
-app.use("/api", userRoute);
-
+app.use('/api/auth', authRoutes)
+app.use('/api', userRoute)
 
 /* =============================== Global error middleware ================================ */
-app.use(errorMiddleware);
+app.use(errorMiddleware)
 /* ===============================
    Server Start
 ================================ */
 app.listen(process.env.PORT, () => {
-  console.log("server running on", process.env.PORT);
-});
+  console.log('server running on', process.env.PORT)
+})

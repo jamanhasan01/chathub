@@ -55,7 +55,9 @@ phone: {
       type: Boolean,
       default: false,
     },
+    isOnline: { type: Boolean, default: false },
   },
+  
   {
     timestamps: true,
   }
