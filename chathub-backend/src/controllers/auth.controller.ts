@@ -5,7 +5,7 @@ import { singleImageUploadService } from '../services/image.upload.service'
 import User from '../models/User.model'
 import { AuthRequest } from '../types/auth.type'
 
-/* =============================== resgister controller ================================ */
+/* ===============================resgister controller ================================ */
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, email, password, phone } = await req.body
