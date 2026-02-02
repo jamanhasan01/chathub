@@ -26,20 +26,3 @@ export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction)
   }
 }
 
-/* =============================== Verify admin Token ================================ */
-export const verifyAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
-  const user = req.user
-  if (!user) {
-    return res.status(401).json({
-      success: false,
-      message: 'Unauthorized',
-    })
-  }
-  if (user.role !== 'admin') {
-    return res.status(403).json({
-      success: false,
-      message: 'Admin access only',
-    })
-  }
-  next()
-}

@@ -5,7 +5,7 @@ export interface IUser {
   email: string
   phone: string
   password: string
-  file: FileList
+  image: string
 }
 export interface IUserResponse {
   message: string
@@ -15,3 +15,5 @@ export interface IUserResponse {
     email: string
   }
 }
+
+

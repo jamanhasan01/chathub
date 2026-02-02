@@ -32,16 +32,11 @@ const userSchema = new Schema<IUser>(
       },
       select: false,
     },
-    image: {
-      publicId: { type: String },
-      url: { type: String },
+    image:{
+      type:String,
+      default:''
     },
 
-    role: {
-      type: String,
-      enum: ["customer", "admin", "super_admin"],
-      default: "customer",
-    },
 phone: {
   type: String,
   required: [true, "Phone number is required"],
@@ -50,11 +45,6 @@ phone: {
     "Invalid Bangladeshi phone number",
   ],
 },
-
-    isBlocked: {
-      type: Boolean,
-      default: false,
-    },
     isOnline: { type: Boolean, default: false },
   },
   

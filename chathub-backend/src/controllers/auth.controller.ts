@@ -47,7 +47,6 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 
     const token = generateToken({
       userId: result.userExists._id.toString(),
-      role: result.userExists.role,
     })
 
     /* =============================== set cookie ================================ */

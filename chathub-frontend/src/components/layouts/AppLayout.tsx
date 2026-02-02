@@ -1,13 +1,14 @@
-import { Outlet } from "react-router"
+import { Outlet } from 'react-router'
+import Header from '../ui/Header'
 
 const AppLayout = () => {
   return (
     <div>
-        <header>header</header>
-        <main>
-            <Outlet></Outlet>
-        </main>
-        <footer>footer</footer>
+      <Header></Header>
+      <main>
+        <Outlet></Outlet>
+      </main>
+      <footer>footer</footer>
     </div>
   )
 }

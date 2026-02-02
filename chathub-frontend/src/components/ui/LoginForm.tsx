@@ -1,99 +1,120 @@
-import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { Mail, Lock, Loader2 } from 'lucide-react'
+import { useForm, type SubmitHandler } from 'react-hook-form'
+import { useMutation } from '@tanstack/react-query'
+import { Mail, Lock, Loader2, LogIn } from 'lucide-react'
+import { toast } from 'sonner'
 
-const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-})
+import { userLogin, type ILoginPayload } from '@/api/auth.api'
+
+/* =============================== component ================================ */
 
 const LoginForm = () => {
-  const [isLoading, setIsLoading] = useState(false)
-
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    resolver: zodResolver(loginSchema),
+  } = useForm<ILoginPayload>({ mode: 'onBlur' })
+
+  /* =============================== mutation ================================ */
+
+  const loginMutation = useMutation({
+    mutationFn: userLogin,
+    onSuccess: (res) => {
+      toast.success(res.message)
+
+      // 🔐 example: store token
+      localStorage.setItem('accessToken', res.token)
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || 'Login failed')
+    },
   })
 
-  const onSubmit = async (data) => {
-    setIsLoading(true)
-    console.log('Login data:', data)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setIsLoading(false)
+  /* =============================== submit handler ================================ */
+
+  const onSubmit: SubmitHandler<ILoginPayload> = (data) => {
+    loginMutation.mutate(data)
   }
 
+  /* =============================== jsx ================================ */
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full mb-4">
-            <Lock className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-800">Welcome Back</h1>
-          <p className="text-gray-600 mt-2">Sign in to your chat account</p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4">
+      <div className="absolute inset-0 bg-grid-white/[0.02] bg-grid" />
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  {...register('email')}
-                  type="email"
-                  placeholder="you@example.com"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-                />
-              </div>
-              {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
+      <div className="relative w-full max-w-md">
+        <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-3xl blur-xl" />
+
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="relative bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-2xl p-8 space-y-6 shadow-2xl"
+        >
+          {/* Header */}
+          <div className="text-center space-y-3">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mb-2">
+              <LogIn className="w-8 h-8 text-white" />
             </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Welcome Back
+            </h1>
+            <p className="text-gray-400 text-sm">Sign in to your account</p>
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+          {/* Fields */}
+          <div className="space-y-5">
+            {/* Email */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+                <Mail className="w-4 h-4" />
+                Email Address
+              </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
-                  {...register('password')}
-                  type="password"
-                  placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
+                  {...register('email', { required: 'Email is required' })}
+                  type="email"
+                  className="w-full px-4 py-3 pl-11 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 
+                  focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                  placeholder="you@example.com"
                 />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               </div>
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
+              {errors.email && (
+                <p className="text-sm text-red-400">{errors.email.message}</p>
               )}
             </div>
 
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
+            {/* Password */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+                <Lock className="w-4 h-4" />
+                Password
               </label>
-              <button
-                type="button"
-                className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
-              >
-                Forgot password?
-              </button>
+              <div className="relative">
+                <input
+                  {...register('password', {
+                    required: 'Password is required',
+                    minLength: { value: 6, message: 'Minimum 6 characters' },
+                  })}
+                  type="password"
+                  className="w-full px-4 py-3 pl-11 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 
+                  focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                  placeholder="••••••••"
+                />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+              </div>
+              {errors.password && (
+                <p className="text-sm text-red-400">{errors.password.message}</p>
+              )}
             </div>
           </div>
 
+          {/* Button */}
           <button
             type="submit"
-            disabled={isLoading}
-            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-70 disabled:cursor-not-allowed transition flex items-center justify-center"
+            disabled={loginMutation.isPending}
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 
+            disabled:opacity-60 py-3.5 rounded-xl font-semibold text-white transition flex justify-center"
           >
-            {isLoading ? (
+            {loginMutation.isPending ? (
               <>
                 <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                 Signing in...
@@ -103,14 +124,13 @@ const LoginForm = () => {
             )}
           </button>
 
-          <div className="text-center">
-            <p className="text-gray-600">
-              Don't have an account?{' '}
-              <button type="button" className="text-indigo-600 hover:text-indigo-800 font-medium">
-                Create Account
-              </button>
-            </p>
-          </div>
+          {/* Footer */}
+          <p className="text-center text-sm text-gray-400 pt-4 border-t border-gray-800">
+            Don’t have an account?{' '}
+            <a href="/register" className="text-blue-400 hover:text-blue-300 font-medium">
+              Create one
+            </a>
+          </p>
         </form>
       </div>
     </div>
