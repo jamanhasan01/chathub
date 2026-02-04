@@ -1,8 +1,9 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import authRoutes from './routes/auth.routes'
-import userRoute from './routes/user.routes'
-
+import userRoutes from './routes/user.routes'
+import roomRoutes from './routes/room.routes'
+import messageRoutes from './routes/message.routes'
 import cookieParser from 'cookie-parser'
 
 import connectDB from './config/connectDB'
@@ -45,8 +46,9 @@ app.get('/', (_req, res) => {
 
 /* =============================== All Route Global middle ware ================================ */
 app.use('/api/auth', authRoutes)
-app.use('/api', userRoute)
-
+app.use('/api', userRoutes)
+app.use('/api/chat', roomRoutes)
+app.use('/api/chat', messageRoutes)
 /* =============================== Global error middleware ================================ */
 app.use(errorMiddleware)
 /* ===============================

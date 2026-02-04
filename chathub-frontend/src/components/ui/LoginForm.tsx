@@ -4,6 +4,7 @@ import { Mail, Lock, Loader2, LogIn } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { userLogin, type ILoginPayload } from '@/api/auth.api'
+import type { AxiosError } from 'axios'
 
 /* =============================== component ================================ */
 
@@ -24,8 +25,8 @@ const LoginForm = () => {
       // 🔐 example: store token
       localStorage.setItem('accessToken', res.token)
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || 'Login failed')
+    onError: (error: AxiosError<{ message: string }>) => {
+      toast.error(error?.message || 'Login failed')
     },
   })
 
@@ -77,9 +78,7 @@ const LoginForm = () => {
                 />
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               </div>
-              {errors.email && (
-                <p className="text-sm text-red-400">{errors.email.message}</p>
-              )}
+              {errors.email && <p className="text-sm text-red-400">{errors.email.message}</p>}
             </div>
 
             {/* Password */}
@@ -101,9 +100,7 @@ const LoginForm = () => {
                 />
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               </div>
-              {errors.password && (
-                <p className="text-sm text-red-400">{errors.password.message}</p>
-              )}
+              {errors.password && <p className="text-sm text-red-400">{errors.password.message}</p>}
             </div>
           </div>
 

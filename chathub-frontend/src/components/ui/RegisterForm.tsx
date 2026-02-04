@@ -1,10 +1,11 @@
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 
-import type { IUser } from '@/types/user.types'
+import type {IUser } from '@/types/user.types'
 import { toast } from 'sonner'
 import { Loader2, UserPlus, User, Mail, Phone, Lock } from 'lucide-react'
 import { userRegister } from '@/api/auth.api'
+import type { AxiosError } from 'axios'
 
 /* =============================== component ================================ */
 
@@ -24,7 +25,7 @@ const RegisterForm = () => {
       toast.success(res.message)
       reset()
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error?.message || 'Registration failed')
     },
   })

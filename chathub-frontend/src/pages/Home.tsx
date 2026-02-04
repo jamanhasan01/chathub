@@ -1,16 +1,11 @@
-import { getMe } from "@/api/auth.api"
-import { useQuery } from "@tanstack/react-query"
-
-const HomePage = () => {
-    const { isPending, error, data } = useQuery({
-    queryKey: ['user'],
-    queryFn: () =>getMe(),
-  })
-  console.log('data',data);
-  
+// Inside your Home component
+const Home = () => {
   return (
-    <div className=''>HomePage</div>
+    <div className="space-y-4">
+      <h2 className="text-2xl font-bold text-foreground">HomePage</h2>
+      <p className="text-muted-foreground">This text will now be grey/muted instead of black.</p>
+    </div>
   )
 }
 
-export default HomePage
+export default Home

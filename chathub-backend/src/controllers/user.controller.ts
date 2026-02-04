@@ -10,7 +10,7 @@ export const getAllUser = async (req: Request, res: Response) => {
 
     // ================================users service called======================================
     const result = await getAllUserService(page,limit)
-    console.log(result);
+
     
     // ================================page validation======================================
 

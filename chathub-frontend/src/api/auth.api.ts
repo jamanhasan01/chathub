@@ -12,6 +12,12 @@ export interface ILoginPayload {
   password: string
 }
 
+/* =============================== types ================================ */
+export interface IApiError {
+  message: string
+}
+
+
 export const userRegister = async (data: IUser) => {
   const res = await api.post<ApiResponse<IUser>>('/auth/register', data)
   console.log(res.data)
@@ -27,5 +33,12 @@ export const userLogin = async (data: ILoginPayload) => {
 
 export const getMe = async () => {
   const res = await api.get<ApiResponse<IUser>>('/auth/me')
+  return res.data
+}
+
+export const getAllUser=async()=>{
+  const res=await api.get('/users')
+  console.log('users ',res.data);
+  
   return res.data
 }

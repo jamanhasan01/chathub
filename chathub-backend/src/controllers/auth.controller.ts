@@ -66,8 +66,6 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 /* =============================== me controller (current login user data) ================================ */
 export const getMe = async (req: AuthRequest, res: Response, next: NextFunction) => {
   const userId = req.user?.userId
-  console.log('id ', userId)
-
   if (!userId) {
     return res.status(404).json({ status: false, message: 'Unauthorized' })
   }
