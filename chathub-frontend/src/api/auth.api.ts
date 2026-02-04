@@ -17,17 +17,14 @@ export interface IApiError {
   message: string
 }
 
-
 export const userRegister = async (data: IUser) => {
   const res = await api.post<ApiResponse<IUser>>('/auth/register', data)
-  console.log(res.data)
+
   return res.data
 }
 
 export const userLogin = async (data: ILoginPayload) => {
   const res = await api.post('auth/login', data)
-  console.log('login ', res.data)
-
   return res.data
 }
 
@@ -36,9 +33,9 @@ export const getMe = async () => {
   return res.data
 }
 
-export const getAllUser=async()=>{
-  const res=await api.get('/users')
-  console.log('users ',res.data);
-  
+export const getAllUser = async () => {
+  const res = await api.get('/users')
+
+
   return res.data
 }
