@@ -7,6 +7,13 @@ export interface ApiResponse<T> {
   data?: T
 }
 
+export interface RegisterPayload {
+  name: string
+  email: string
+  phone: string
+  password: string
+}
+
 export interface ILoginPayload {
   email: string
   password: string
@@ -17,7 +24,7 @@ export interface IApiError {
   message: string
 }
 
-export const userRegister = async (data: IUser) => {
+export const userRegister = async (data: RegisterPayload) => {
   const res = await api.post<ApiResponse<IUser>>('/auth/register', data)
 
   return res.data
@@ -35,7 +42,6 @@ export const getMe = async () => {
 
 export const getAllUser = async () => {
   const res = await api.get('/users')
-
 
   return res.data
 }
