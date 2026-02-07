@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 
 import { userLogin, type ILoginPayload } from '@/api/auth.api'
 import type { AxiosError } from 'axios'
+import { useNavigate } from 'react-router'
 
 /* =============================== component ================================ */
 
@@ -15,15 +16,17 @@ const LoginForm = () => {
     formState: { errors },
   } = useForm<ILoginPayload>({ mode: 'onBlur' })
 
+  const navigate = useNavigate()
+
   /* =============================== mutation ================================ */
 
   const loginMutation = useMutation({
     mutationFn: userLogin,
     onSuccess: (res) => {
       toast.success(res.message)
-
       // 🔐 example: store token
       localStorage.setItem('accessToken', res.token)
+      navigate('/')
     },
     onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error?.message || 'Login failed')

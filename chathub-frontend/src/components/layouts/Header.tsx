@@ -1,7 +1,20 @@
 import { Bell, Search, User } from 'lucide-react'
 import { Button } from '../ui/button'
+import { useQuery } from '@tanstack/react-query'
+import { getMe } from '@/api/auth.api'
 
 export const Header = () => {
+  const { data: me, isLoading } = useQuery({
+    queryKey: ['user'],
+    queryFn: getMe,
+    select: (res) => res.data,
+  })
+
+  if (isLoading) {
+    return null
+  }
+  console.log(me)
+
   return (
     <header className="h-16 border-b border-border bg-background/50 backdrop-blur-md px-6 flex items-center justify-between">
       {/* Left Side: Context / Breadcrumbs */}
@@ -27,7 +40,7 @@ export const Header = () => {
         {/* User Profile Trigger */}
         <div className="flex items-center gap-3 ml-2 pl-4 border-l border-border">
           <div className="flex flex-col items-end hidden sm:flex">
-            <span className="text-xs font-medium text-foreground">John Doe</span>
+            <span className="text-xs font-medium text-foreground">{me?.name}</span>
             <span className="text-[10px] text-green-500">Online</span>
           </div>
           <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-blue to-brand-purple p-[1px]">

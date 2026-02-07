@@ -1,48 +1,58 @@
-/* =============================== chat user item ================================ */
 import { cn } from '@/lib/utils';
 import type { IUser } from '@/types/user.types';
 
 interface ChatUserItemProps {
   user: IUser;
   isActive?: boolean;
-  onClick: (user: IUser) => void; // ✅ ADD THIS
+  onClick: (user: IUser) => void;
 }
 
-export const ChatUserItem = ({ user, isActive ,onClick}: ChatUserItemProps) => {
-
-
+export const ChatUserItem = ({ user, isActive, onClick }: ChatUserItemProps) => {
   return (
-    <div
-    onClick={()=>onClick(user)}
+    <button
+      onClick={() => onClick(user)}
       className={cn(
-        'flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer transition',
+        'w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-colors text-left',
         isActive
-          ? 'bg-brand-blue/10'
-          : 'hover:bg-muted'
+          ? 'bg-brand-blue/10 border border-brand-blue/20'
+          : 'hover:bg-gray-50 border border-transparent'
       )}
     >
-      {/* =============================== avatar ================================ */}
+      {/* Avatar with fallback */}
       <div className="relative">
-        <img
-            src={user.image || '/avatar.jpg'}
-          alt={user.name}
-          className="w-10 h-10 rounded-full object-cover"
-        />
-        <span
-          className={cn(
-            'absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-background',
-            user.isOnline ? 'bg-green-500' : 'bg-muted-foreground'
-          )}
-        />
+        {user.image ? (
+          <img
+            src={user.image}
+            alt={user.name}
+            className="w-10 h-10 rounded-full object-cover border border-gray-200"
+          />
+        ) : (
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-blue/20 to-brand-purple/20 flex items-center justify-center">
+            <span className="font-medium text-gray-700">
+              {user.name?.charAt(0)?.toUpperCase() || 'U'}
+            </span>
+          </div>
+        )}
+        
+        {/* Online status */}
+        <div className={cn(
+          'absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white',
+          user.isOnline ? 'bg-green-500' : 'bg-gray-300'
+        )} />
       </div>
 
-      {/* =============================== user info ================================ */}
+      {/* User info */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">{user.name}</p>
-        <p className="text-xs text-muted-foreground truncate">
+        <div className="flex items-center justify-between">
+          <p className="font-medium text-gray-900 text-sm truncate">
+            {user.name}
+          </p>
+          <span className="text-xs text-gray-400">2m</span>
+        </div>
+        <p className="text-xs text-gray-500 truncate">
           {user.email}
         </p>
       </div>
-    </div>
+    </button>
   );
 };
