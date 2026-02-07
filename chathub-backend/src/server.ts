@@ -18,7 +18,7 @@ dotenv.config()
 /* =============================== CORS CONFIG ================================ */
 app.use(
   cors({
-    origin: ['https://chathub-frontend-beta.vercel.app'],
+    origin: ['https://chathub-frontend-beta.vercel.app','http://localhost:5173'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   }),

@@ -5,10 +5,9 @@ import { Server } from 'socket.io'
 const app = express()
 const server = createServer(app)
 
-const io = new Server(server, {
-  transports: ['websocket'],
+const io = new Server(server, { 
   cors: {
-    origin: 'https://chathub-frontend-beta.vercel.app',
+       origin: ['https://chathub-frontend-beta.vercel.app','http://localhost:5173'],
     methods: ['GET', 'POST'],
   },
 })
