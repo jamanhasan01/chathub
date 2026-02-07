@@ -2,31 +2,45 @@ import { NextFunction, Response } from 'express'
 import { AuthRequest } from '../types/auth.type'
 import ChatMessage from '../models/Message.model'
 import ChatRoom from '../models/Room.model'
+import { io } from '../utils/socket'
 
 export const chatMessage = async (req: AuthRequest, res: Response, next: NextFunction) => {
-  const sender = req.user?.userId
-  const { roomId, content } = req.body
-  if (!sender) {
-    return res.status(401).json({ message: 'Unauthorized' })
-  }
+  try {
+    const sender = req.user?.userId
+    const { roomId, content } = req.body
 
-  if (!roomId || !content) {
-    return res.status(401).json({ success: false, message: 'room and content is required' })
-  }
-  const message = await ChatMessage.create({ room: roomId, sender, content })
-  console.log('message ', message)
+    if (!sender) {
+      return res.status(401).json({ message: 'Unauthorized' })
+    }
 
-  const storeInRoom = await ChatRoom.findByIdAndUpdate(
-    roomId,
-    { lastMessage: message._id },
-    { new: true },
-  )
-  if (!storeInRoom) {
-    return res.status(401).json({ success: false, message: 'room not found' })
+    if (!roomId || !content) {
+      return res.status(400).json({ success: false, message: 'room and content is required' })
+    }
+
+    // 1️⃣ Save message
+    const message = await ChatMessage.create({
+      room: roomId,
+      sender,
+      content,
+    })
+
+    // 2️⃣ Populate sender (IMPORTANT)
+    const populatedMessage = await message.populate('sender', 'name email avatar')
+
+    // 3️⃣ Update room
+    await ChatRoom.findByIdAndUpdate(roomId, {
+      lastMessage: message._id,
+    })
+
+    // 4️⃣ 🔥 Emit FULL message object
+    io.to(roomId).emit('new-message', populatedMessage)
+
+    // 5️⃣ Response
+    res.json({ success: true, data: populatedMessage })
+  } catch (error) {
+    next(error)
   }
-  res.json({ success: true, data: storeInRoom })
 }
-
 /* =============================== Get Messages by Room ================================ */
 export const messages = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
@@ -42,7 +56,6 @@ export const messages = async (req: AuthRequest, res: Response, next: NextFuncti
     const findMessages = await ChatMessage.find({ room: roomId })
       .populate('sender', 'name email avatar')
       .sort({ createdAt: 1 }) // oldest → newest
-    console.log('find message', findMessages)
 
     res.status(200).json({
       success: true,

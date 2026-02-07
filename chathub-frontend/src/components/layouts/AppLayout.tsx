@@ -22,7 +22,7 @@ const AppLayout = () => {
         <main className="flex-1 overflow-y-auto p-4 ">
           <div className="max-w-7xl mx-auto h-full">
             {/* Page Container */}
-            <div className="h-full w-full rounded-3xl border border-border bg-white/[0.02] backdrop-blur-md p-6 shadow-2xl">
+            <div className="h-full  w-full  border border-border bg-white/[0.02] backdrop-blur-md  shadow-2xl">
               <Outlet />
             </div>
           </div>

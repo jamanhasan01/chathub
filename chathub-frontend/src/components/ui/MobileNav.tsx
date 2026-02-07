@@ -4,8 +4,8 @@ import { MessageSquare, Users, UserCircle, Settings, type LucideIcon } from 'luc
 
 const MobileNav = () => {
   return (
-    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-gray-900/90 backdrop-blur-xl border-t border-gray-800">
-      <div className="flex items-center justify-around p-3">
+    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 h-16 bg-gray-900/90 backdrop-blur-xl border-t border-gray-800">
+      <div className="flex h-full items-center justify-around px-3">
         <NavButton icon={MessageSquare} label="Chats" active />
         <NavButton icon={Users} label="Groups" />
         <NavButton icon={UserCircle} label="Contacts" />

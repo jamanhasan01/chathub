@@ -2,43 +2,51 @@ import { Send, MoreVertical } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createMessage, getMessages } from '@/api/chatroom.api'
 import { useParams } from 'react-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getMe, type ApiResponse } from '@/api/auth.api'
 import type { IUser } from '@/types/user.types'
+import { socket } from '@/api/socket.api'
 
+/* =============================== Types ================================ */
+interface IMessageSender {
+  _id: string
+  name: string
+  email: string
+}
 interface IMessage {
   _id: string
   content: string
-  sender: string | { _id: string }
+  room: string
+  sender: IMessageSender
+  createdAt: string
 }
 
 const ChatRoom = () => {
   const { roomId } = useParams<{ roomId: string }>()
-
   const [message, setMessage] = useState('')
+  const queryClient = useQueryClient()
 
-  /* =============================== Get Messages ================================ */
+  /* =============================== Get Me ================================ */
   const { data: myUserId } = useQuery<ApiResponse<IUser>, Error, string>({
     queryKey: ['me'],
     queryFn: getMe,
     select: (res) => {
-      if (!res.data) {
-        throw new Error('User data not found')
-      }
+      if (!res.data) throw new Error('User not found')
       return res.data._id
     },
   })
 
   /* =============================== Get Messages ================================ */
-  const { data, isLoading } = useQuery({
+  const { data: messages = [], isLoading } = useQuery<IMessage[]>({
     queryKey: ['messages', roomId],
     queryFn: () => getMessages(roomId!),
     enabled: !!roomId,
   })
-  console.log('data prient ', data)
+
+  console.log('user id ', messages)
 
   /* =============================== Send Message ================================ */
   const messageMutation = useMutation({
@@ -58,6 +66,32 @@ const ChatRoom = () => {
     })
   }
 
+  /* =============================== Socket Listener ================================ */
+  useEffect(() => {
+    if (!roomId) return
+
+    socket.emit('join-room', roomId)
+
+    const handler = (msg: IMessage) => {
+      queryClient.setQueryData<IMessage[]>(['messages', roomId], (old) => {
+        const safeOld = old ?? []
+
+        // prevent duplicate message
+        if (safeOld.some((m) => m._id === msg._id)) {
+          return safeOld
+        }
+        console.log('safeOld ', safeOld)
+        return [...safeOld, msg]
+      })
+    }
+
+    socket.on('new-message', handler)
+
+    return () => {
+      socket.off('new-message', handler)
+    }
+  }, [roomId, queryClient])
+
   return (
     <div className="flex flex-col h-full bg-background">
       {/* =============================== Header ================================ */}
@@ -68,7 +102,7 @@ const ChatRoom = () => {
           </Avatar>
           <div>
             <p className="text-sm font-medium">Chat</p>
-            <span className="text-xs text-muted-foreground">{data.data?.length ?? 0} messages</span>
+            <span className="text-xs text-muted-foreground">{messages.length} messages</span>
           </div>
         </div>
 
@@ -81,14 +115,12 @@ const ChatRoom = () => {
       <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
         {isLoading && <p className="text-sm text-muted-foreground">Loading messages…</p>}
 
-        {data?.data?.length === 0 && (
+        {!isLoading && messages.length === 0 && (
           <p className="text-sm text-muted-foreground">No messages yet</p>
         )}
 
-        {data?.data?.map((msg: IMessage) => {
-          const senderId = typeof msg.sender === 'string' ? msg.sender : msg.sender._id
-
-          const isMine = senderId === myUserId
+        {messages.map((msg) => {
+          const isMine = msg.sender._id === myUserId
 
           return (
             <div key={msg._id} className={`flex ${isMine ? 'justify-end' : 'items-start gap-2'}`}>
@@ -100,7 +132,7 @@ const ChatRoom = () => {
 
               <div
                 className={`px-4 py-2 rounded-xl max-w-xs text-sm ${
-                  isMine ? 'bg-brand-blue text-white' : 'bg-muted'
+                  isMine ? 'bg-brand-blue text-white' : 'bg-muted text-foreground'
                 }`}
               >
                 {msg.content}
