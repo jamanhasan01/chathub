@@ -21,6 +21,7 @@ app.use(
     origin: [
       'http://localhost:3000',
       'http://localhost:5173',
+      'https://chathub-murex-three.vercel.app',
       'https://e-commerce-backend-tawny-ten.vercel.app',
     ],
     credentials: true,
