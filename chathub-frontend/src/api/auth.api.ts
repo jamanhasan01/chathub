@@ -37,11 +37,11 @@ export const userLogin = async (data: ILoginPayload) => {
 
 export const getMe = async () => {
   const res = await api.get<ApiResponse<IUser>>('/auth/me')
-  return res.data
+  return res?.data
 }
 
 export const getAllUser = async () => {
   const res = await api.get('/users')
 
-  return res.data
+  return res?.data
 }
