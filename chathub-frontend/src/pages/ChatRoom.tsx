@@ -34,7 +34,7 @@ const ChatRoom = () => {
   const bottomRef = useRef<HTMLDivElement | null>(null)
 
   /* =============================== Get Me ================================ */
-  const { data: myUserId } = useQuery<ApiResponse<IUser>, Error, string>({
+  const { data: myUserId, isLoading: userLoading } = useQuery<ApiResponse<IUser>, Error, string>({
     queryKey: ['me'],
     queryFn: getMe,
     select: (res) => {
@@ -95,7 +95,9 @@ const ChatRoom = () => {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
-
+  if (userLoading) {
+    return null
+  }
   return (
     <div className="flex flex-col h-full bg-background">
       {/* =============================== Header ================================ */}

@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
-import { loginUserService, registerUserService } from '../services/auth.service'
-import { generateToken } from '../utils/jwt'
-import { singleImageUploadService } from '../services/image.upload.service'
-import User from '../models/User.model'
-import { AuthRequest } from '../types/auth.type'
+import { loginUserService, registerUserService } from '../services/auth.service.js'
+import { generateToken } from '../utils/jwt.js'
+import { singleImageUploadService } from '../services/image.upload.service.js'
+import User from '../models/User.model.js'
+import { AuthRequest } from '../types/auth.type.js'
 
 /* ===============================resgister controller ================================ */
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {

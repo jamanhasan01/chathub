@@ -1,6 +1,6 @@
 import { NextFunction } from 'express'
 import jwt, { Secret } from 'jsonwebtoken'
-import { JWTPayload } from '../types/auth.type'
+import { JWTPayload } from '../types/auth.type.js'
 
 export const generateToken = (payload: JWTPayload) => {
   const secret = process.env.JSON_TOKEN_SECRET

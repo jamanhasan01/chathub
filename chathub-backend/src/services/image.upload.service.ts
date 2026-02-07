@@ -1,5 +1,5 @@
-import User from '../models/User.model'
-import cloudinary from '../utils/cloudinary'
+import User from '../models/User.model.js'
+import cloudinary from '../utils/cloudinary.js'
 
 // ================================ Single image upload for users ===============================
 export const singleImageUploadService = async (file: Express.Multer.File, id: string) => {

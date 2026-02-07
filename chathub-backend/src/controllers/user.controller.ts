@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { getAllUserService, getSingleUserService } from '../services/user.service'
+import { getAllUserService, getSingleUserService } from '../services/user.service.js'
 
 /* =============================== Get All Users Controller ================================ */
 export const getAllUser = async (req: Request, res: Response) => {

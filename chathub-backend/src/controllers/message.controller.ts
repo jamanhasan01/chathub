@@ -1,8 +1,8 @@
 import { NextFunction, Response } from 'express'
-import { AuthRequest } from '../types/auth.type'
-import ChatMessage from '../models/Message.model'
-import ChatRoom from '../models/Room.model'
-import { io } from '../utils/socket'
+import { AuthRequest } from '../types/auth.type.js'
+import ChatMessage from '../models/Message.model.js'
+import ChatRoom from '../models/Room.model.js'
+import { io } from '../utils/socket.js'
 
 export const chatMessage = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {

@@ -1,6 +1,6 @@
 import mongoose, { Schema, Model } from "mongoose";
 import bcrypt from "bcrypt";
-import { IUser } from "../types/user.type";
+import { IUser } from "../types/user.type.js";
 
 /* ===============================
     Mongoose Schema

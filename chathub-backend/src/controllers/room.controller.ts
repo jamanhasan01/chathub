@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
-import { AuthRequest } from '../types/auth.type'
-import ChatRoom from '../models/Room.model'
+import { AuthRequest } from '../types/auth.type.js'
+import ChatRoom from '../models/Room.model.js'
 
 export const createRoom = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {

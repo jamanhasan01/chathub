@@ -4,14 +4,14 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 
-import authRoutes from './routes/auth.routes'
-import userRoutes from './routes/user.routes'
-import roomRoutes from './routes/room.routes'
-import messageRoutes from './routes/message.routes'
+import authRoutes from './routes/auth.routes.js'
+import userRoutes from './routes/user.routes.js'
+import roomRoutes from './routes/room.routes.js'
+import messageRoutes from './routes/message.routes.js'
 
-import connectDB from './config/connectDB'
-import { errorMiddleware } from './middlewares/error.middleware'
-import { app, io, server } from './utils/socket'
+import connectDB from './config/connectDB.js'
+import { errorMiddleware } from './middlewares/error.middleware.js'
+import { app, io, server } from './utils/socket.js'
 
 dotenv.config()
 
